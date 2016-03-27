@@ -19,3 +19,4 @@ new mlazy(selector, options);
 
 #### iScroll
 若页面使用了iScroll, 则需传入iScroll对象
+
