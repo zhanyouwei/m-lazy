@@ -11,20 +11,21 @@
 	} else if (typeof exports === 'object') {
 		module.exports = factory;
 	} else {
-		root.echo = factory(root);
+		root.mlazy = factory(root);
 	}
 })(this, function (root) {
 
 	'use strict';
+
 	var imgList = [],  // 页面所有img元素集合
 		delay,   // setTimeout 对象
 		offset,  //偏移量，用于指定图片距离可视区域多少距离，进行加载
-		time,  // 延迟载入时间
+		lazyTime,  // 延迟载入时间
 		_selector; // 选择器 默认为 .m-lazyload
 
 	function _isShow(el) {
 		var coords = el.getBoundingClientRect();
-		return ( (coords.top >= 0 && coords.left >= 0 && coords.top) <= (window.innerHeight || document.documentElement.clientHeight) + parseInt(offset));
+		return ( (coords.top >= 0 && coords.left >= 0 && coords.top) <= (root.innerHeight || document.documentElement.clientHeight) + parseInt(offset));
 	}
 
 	function _loadImage() {
@@ -42,21 +43,20 @@
 		clearTimeout(delay);
 		delay = setTimeout(function () {
 			_loadImage();
-		}, time);
+		}, lazyTime);
 	}
 
 	function mlazy(selector, options) {
 		var defaults = options || {};
-		offset = defaults.offset || 0;
-		time = defaults.time || 250;
+		offset = defaults.offset || 100;
+		lazyTime = defaults.lazyTime || 100;
 		_selector = selector || '.m-lazyload';
 		this.getNode();
 		_delay();//避免首次加载未触发touch事件,主动触发一次加载函数
 		if (defaults.iScroll) {
-			defaults.iScroll.on('scroll', _delay);
 			defaults.iScroll.on('scrollEnd', _delay);
 		} else {
-			window.addEventListener('scroll', _delay, false);
+			root.addEventListener('scroll', _delay, false);
 		}
 	}
 
